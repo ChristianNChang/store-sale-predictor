@@ -30,6 +30,3 @@ batch, _ = next(iter(train_dl))
 input_dim = batch.shape[1]
 
 model = sales_model(input_dim).to(device)
-
-criterion = nn.MSELoss()  # MSE on log1p(sales)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)

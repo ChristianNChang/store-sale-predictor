@@ -4,14 +4,12 @@ import pandas as pd
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 
-data_dir = "./store-sales-time-series-forecasting"
-
 def load_data(data_dir):
     # Read the Kaggle train and test CSVs
     full_train_df = pd.read_csv(os.path.join(data_dir, "train.csv"), parse_dates=["date"])
     test_df       = pd.read_csv(os.path.join(data_dir, "test.csv"),  parse_dates=["date"])
 
-    # Add date-based features to BOTH
+    # Add date-based features to both datasets
     for df in [full_train_df, test_df]:
         df["year"]      = df["date"].dt.year
         df["month"]     = df["date"].dt.month

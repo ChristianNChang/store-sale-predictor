@@ -6,7 +6,7 @@ from torch import optim
 import math
 
 from data_prep import load_data, prep_data
-from model_architecture import sales_model, rmse_from_log
+from model_architecture import sales_model, to_RMSE
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

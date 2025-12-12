@@ -1,7 +1,5 @@
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
-from data_prep import train_dl, device
 
 class sales_model(nn.Module):
   def __init__(self, num_features):

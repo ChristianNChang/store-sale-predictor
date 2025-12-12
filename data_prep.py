@@ -56,4 +56,4 @@ def prep_data(train_df, cutoff_date = "2017-01-01", batch_size = 8192):
   train_dl = DataLoader(train_ds, batch_size = batch_size, shuffle = True)
   valid_dl = DataLoader(valid_ds, batch_size = batch_size, shuffle = False)
 
-  return train_dl, valid_dl, feature_col
+  return train_dl, valid_dl, feature_col 

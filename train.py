@@ -108,3 +108,7 @@ if __name__ == "__main__":
       epochs = 50, lr = 1e-3, weight_decay = 1e-5,
       patience = 7, clip_grad = None, print_every = 1
   )
+
+  # Save the trained model
+  torch.save(model.state_dict(), "sales_model.pth")
+  print("Saved trained model to sales_model.pth")

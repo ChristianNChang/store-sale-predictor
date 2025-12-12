@@ -11,7 +11,7 @@ predict.py — loads the model and generates predictions for test.csv placing th
 visualization.py — loads and plots RMSE curves and MAPE
 
 dependencies:
-train.csv and test.csv placed in project folder
+train.csv and test.csv found at https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data placed in project folder 
 numpy, pandas, torch (PyTorch) and matplotlib installed
 
 running:

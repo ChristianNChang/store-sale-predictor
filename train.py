@@ -13,11 +13,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 train_df, test_df = load_data(".")
 train_dl, valid_dl, feature_col = prep_data(train_df)
 
-batch, _ = next(iter(train_dl))
-input_dim = batch.shape[1]
-
-model = sales_model(input_dim).to(device)
-
 def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5,
                 patience=5, clip_grad=None, print_every=1,):
   model.to(device)
@@ -99,6 +94,7 @@ if __name__ == "__main__":
 
   model = sales_model(input_dim).to(device)
 
+  # Train the model and get training history (50 epochs)
   model, history = train_model(
       model,  train_dl, valid_dl,
       epochs = 50, lr = 1e-3, weight_decay = 1e-5,

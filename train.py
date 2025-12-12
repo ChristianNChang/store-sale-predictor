@@ -15,35 +15,36 @@ print("Using device:", device)
 train_df, test_df = load_data(".")
 train_dl, valid_dl, feature_col = prep_data(train_df)
 
-#get Mean Absolute Error in sales units
-def sales_units_MAE(model, valid_dl, device):
+#get Mean Absolute Pecentage Error for sales units
+def sales_units_MAPE(model, valid_dl, device, eps=1e-8):
     model.eval()
-    all_true = []
-    all_pred = []
+    all_true, all_pred = [], []
 
     with torch.no_grad():
         for xb, yb_log in valid_dl:
             xb = xb.to(device)
             yb_log = yb_log.to(device)
 
-            # model outputs log1p(sales)
             pred_log = model(xb)
 
-            # convert to normal sales units
             true_sales = torch.expm1(yb_log)
             pred_sales = torch.expm1(pred_log)
 
             all_true.append(true_sales.cpu().numpy())
             all_pred.append(pred_sales.cpu().numpy())
 
-    import numpy as np
     y_true = np.concatenate(all_true).ravel()
     y_pred = np.concatenate(all_pred).ravel()
 
-    mae = np.mean(np.abs(y_true - y_pred))
-    print(f"Validation MAE (sales units): {mae:.2f}")
+    # MAPE is undefined when y_true == 0, so skip those entries
+    mask = np.abs(y_true) > eps
+    if mask.sum() == 0:
+        print("Validation MAPE: no non-zero targets, returning NaN")
+        return float("nan")
 
-    return mae
+    mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100.0
+    print(f"Validation MAPE (sales units): {mape:.2f}%  (ignored {(~mask).sum()} zero targets)")
+    return mape
 
 def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5,
                 patience=5, clip_grad=None, print_every=1,):
@@ -143,14 +144,15 @@ if __name__ == "__main__":
   torch.save(model.state_dict(), "sales_model.pth")
   print("Saved trained model to sales_model.pth")
 
-mae = sales_units_MAE(model, valid_dl, device)
+#get MAPE on sales units
+mape = sales_units_MAPE(model, valid_dl, device)
 
-#save training history and final MAE to .npz file
+# Save training history and MAPE to a .npz file
 np.savez(
     "history.npz",
     train_rmse=np.array(history["train_rmse"]),
     valid_rmse=np.array(history["valid_rmse"]),
     valid_rmsle=np.array(history["valid_rmsle"]),
-    final_mae=np.array(mae)
+    final_mape=np.array(mape)
 )
-print("Saved training history and final MAE to history.npz")
+print("Saved training history and MAPE to history.npz")

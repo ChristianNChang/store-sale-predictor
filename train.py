@@ -85,7 +85,7 @@ def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5
         print(f"Early stopping at epoch {epoch}")
         break
 
-    if best_state is not None:
-      model.load_state_dict(best_state)
+  if best_state is not None:
+    model.load_state_dict(best_state)
 
-    return model, hist
+  return model, hist

@@ -12,5 +12,8 @@ visualization.py — loads and plots RMSE curves and MAPE
 
 dependencies:
 train.csv and test.csv placed in project folder
-
 numpy, pandas, torch (PyTorch) and matplotlib installed
+
+running:
+after getting all the dependencies run data_prep.py, train.py, and then visualization.py to see model training information
+run predict.py to get sales predictions on test.csv

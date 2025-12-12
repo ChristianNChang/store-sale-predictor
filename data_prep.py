@@ -18,7 +18,7 @@ def load_data(data_dir):
 
     return full_train_df, test_df
 
-def prep_data(train_df, cutoff_date = "2017-01-01", batch_size = 4096):
+def prep_data(train_df, cutoff_date = "2017-01-01", batch_size = 8192):
   input_features = ["year", "month", "day", "dayofweek", "store_nbr", "onpromotion", "family"]
 
   #convert features to be usable values (one-hot columns) ex: family values such as "dairy" or "deli" converted to their own collumns and given a value of 0 or 1

@@ -4,11 +4,13 @@ import torch
 from torch import nn
 from torch import optim
 import math
+import time
 
 from data_prep import load_data, prep_data
 from model_architecture import sales_model
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
 
 train_df, test_df = load_data(".")
 train_dl, valid_dl, feature_col = prep_data(train_df)
@@ -18,7 +20,7 @@ def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5
   model.to(device)
   optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
   criterion = nn.MSELoss()
-  scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2, verbose=True)
+  scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2,)
 
   best_val = float('inf')
   best_state = None
@@ -27,6 +29,9 @@ def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5
   hist = {'train_rmse': [], 'valid_rmse': [], 'valid_rmsle': []}
 
   for epoch in range(1, epochs+1):
+
+    #record start time
+    start_time = time.perf_counter()
     # training the model
     model.train()
     train_losses = []
@@ -66,8 +71,11 @@ def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5
 
     scheduler.step(valid_rmsle)
 
+    #calculate epoch time
+    epoch_time = time.perf_counter() - start_time
+
     if epoch % print_every == 0:
-      print(f"Epoch {epoch:02d} | train_rmse (log-space) {train_rmse:.6f} | valid_rmse (log-space) {valid_rmse:.5f}")
+      print(f"Epoch {epoch:02d} | train_rmse (log-space) {train_rmse:.6f} | valid_rmse (log-space) {valid_rmse:.5f} | epoch_time {epoch_time:.2f}s")
 
     # for early stopping based on the valid_rmse
     if valid_rmse < best_val:

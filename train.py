@@ -89,3 +89,18 @@ def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5
     model.load_state_dict(best_state)
 
   return model, hist
+
+#run training
+if __name__ == "__main__":
+
+  # Get input dimension from batch
+  batch, _ = next(iter(train_dl))
+  input_dim = batch.shape[1]
+
+  model = sales_model(input_dim).to(device)
+
+  model, history = train_model(
+      model,  train_dl, valid_dl,
+      epochs = 50, lr = 1e-3, weight_decay = 1e-5,
+      patience = 7, clip_grad = None, print_every = 1
+  )

@@ -112,3 +112,12 @@ if __name__ == "__main__":
   # Save the trained model
   torch.save(model.state_dict(), "sales_model.pth")
   print("Saved trained model to sales_model.pth")
+
+  # Save training history
+  np.savez(
+    "history.npz",
+    train_rmse=np.array(history["train_rmse"]),
+    valid_rmse=np.array(history["valid_rmse"]),
+    valid_rmsle=np.array(history["valid_rmsle"]),
+)
+print("Saved training history to history.npz")

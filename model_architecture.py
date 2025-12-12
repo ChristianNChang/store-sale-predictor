@@ -14,19 +14,13 @@ class sales_model(nn.Module):
         nn.Linear(128,1) #out layer
     )
 
-  #helper function to feed input
+  #helper function to feed input and match 1D target
   def forward(self, x):
     return self.layers(x).squeeze(1)
 
-#data was converted to log(1 + sales). This changes it back and returns root mean squared error
+#data was converted to log(1 + sales). This changes it back and returns RMSE
 def to_RMSE(pred_log, true_log):
   pred = torch.expm1(pred_log)
   true = torch.expm1(true_log)
   mse = torch.mean((pred - true) ** 2)
   return torch.sqrt(mse)
-
-# Infer input dimension from one batch
-batch, _ = next(iter(train_dl))
-input_dim = batch.shape[1]
-
-model = sales_model(input_dim).to(device)

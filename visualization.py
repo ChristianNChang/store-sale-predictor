@@ -6,7 +6,7 @@ data = np.load("history.npz")
 
 train_rmse = data["train_rmse"]
 valid_rmse = data["valid_rmse"]
-valid_rmsle = data["valid_rmsle"]
+final_mae  = data["final_mae"].item()
 
 # Plot RMSE in log-space
 plt.figure()
@@ -15,7 +15,21 @@ plt.plot(valid_rmse, label="valid_rmse")
 plt.xlabel("Epoch")
 plt.ylabel("RMSE (log-space)")
 plt.title("Training vs Validation RMSE")
+
 plt.legend()
+
+# Put final MAE as an integer in the top-right corner
+ax = plt.gca()
+text_str = f"Final MAE: {int(round(final_mae))}"
+ax.text(
+    0.98, 0.98,
+    text_str,
+    transform=ax.transAxes,
+    ha="right",
+    va="top",
+    bbox=dict(boxstyle="round", facecolor="white", alpha=0.7)
+)
+
 plt.tight_layout()
-plt.savefig("rmse_curve.png")
+plt.savefig("rmse_curve_with_mae.png")
 plt.show()

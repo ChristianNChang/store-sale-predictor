@@ -16,12 +16,7 @@ def load_data(data_dir):
         df["day"]       = df["date"].dt.day
         df["dayofweek"] = df["date"].dt.dayofweek
 
-    # Time-based split on the training CSV
-    cutoff_date = "2017-01-01"
-    mask_train  = full_train_df["date"] < cutoff_date
-
-    train_df = full_train_df[mask_train].copy()      # training subset
-    valid_df = full_train_df[~mask_train].copy()     # validation subset
+    return full_train_df, test_df
 
 def prep_data(train_df, cutoff_date = "2017-01-01", batch_size = 4096):
   input_features = ["year", "month", "day", "dayofweek", "store_nbr", "onpromotion", "family"]

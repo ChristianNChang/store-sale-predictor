@@ -6,12 +6,17 @@ from torch import optim
 import math
 
 from data_prep import load_data, prep_data
-from model_architecture import sales_model, to_RMSE
+from model_architecture import sales_model
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 train_df, test_df = load_data(".")
 train_dl, valid_dl, feature_col = prep_data(train_df)
+
+batch, _ = next(iter(train_dl))
+input_dim = batch.shape[1]
+
+model = sales_model(input_dim).to(device)
 
 def train_model(model, train_dl, valid_dl, epochs=20, lr=1e-3, weight_decay=1e-5,
                 patience=5, clip_grad=None, print_every=1,):
